@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Access</title>
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- আপনার দেওয়া Ad SDK (এটি অটোমেটিক অ্যাড লোড করবে) -->
+    <script src='//libtl.com/sdk.js' data-zone='10404814' data-sdk='show_10404814'></script>
+
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            background: #111;
+            padding: 40px 20px;
+            border-radius: 30px;
+            border: 1px solid #333;
+            width: 85%;
+            max-width: 400px;
+            box-shadow: 0 0 30px rgba(0, 136, 204, 0.2);
+        }
+        .icon { font-size: 60px; margin-bottom: 20px; }
+        h1 { font-size: 24px; margin-bottom: 10px; color: #0088cc; }
+        p { font-size: 14px; color: #888; margin-bottom: 30px; }
+        
+        /* প্রফেশনাল বাটন */
+        .ad-btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(90deg, #0088cc, #00c6ff);
+            color: white;
+            padding: 18px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 136, 204, 0.4);
+            transition: 0.3s;
+        }
+        .ad-btn:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="icon">🔓</div>
+    <h1>লিংকটি প্রস্তুত!</h1>
+    <p>নিচের বাটনে ক্লিক করে বিজ্ঞাপনটি দেখুন এবং কন্টেন্টটি আনলক করুন।</p>
+    
+    <!-- এই বাটনে ক্লিক করলেই SDK সক্রিয় হবে -->
+    <button class="ad-btn" onclick="triggerAd()">UNLOCK NOW</button>
+</div>
+
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+
+    function triggerAd() {
+        // ১. আপনার SDK এর ফাংশনটি কল করা (যদি SDK এটি সাপোর্ট করে)
+        if (typeof show_10404814 === 'function') {
+            show_10404814();
+        } 
+        
+        // ২. বিকল্প হিসেবে আপনার Adsterra স্মার্টলিংক ওপেন করা (যাতে ইনকাম নিশ্চিত হয়)
+        setTimeout(() => {
+            tg.openLink("https://www.effectivegatecpm.com/nt8dt64s?key=0d7f3498e36834982c58c761f7deaa95");
+        }, 500); // ০.৫ সেকেন্ড পর লিংকটি ওপেন হবে
+    }
+</script>
+
+</body>
+</html>
