@@ -1,0 +1,32 @@
+const TelegramBot = require('node-telegram-bot-api');
+
+// আপনার বটের টোকেন
+const token = '8279372040:AAGKfFsmnkI5ihQE-T2v6hU47dEoZ892_nA'; 
+const bot = new TelegramBot(token);
+
+module.exports = async (request, response) => {
+    if (request.method === 'POST') {
+        const { body } = request;
+
+        if (body.message) {
+            const chatId = body.message.chat.id;
+            const text = body.message.text;
+
+            if (text === '/start') {
+                await bot.sendMessage(chatId, "স্বাগতম @Lamiashek_bot-এ! \nকন্টেন্টটি আনলক করতে নিচের বাটনে ক্লিক করুন।", {
+                    reply_markup: {
+                        inline_keyboard: [[
+                            {
+                                text: "🔓 Unlock Content",
+                                web_app: { url: `https://${request.headers.host}/index.html` }
+                            }
+                        ]]
+                    }
+                });
+            }
+        }
+        response.status(200).send('OK');
+    } else {
+        response.status(200).send('Bot is running');
+    }
+};
