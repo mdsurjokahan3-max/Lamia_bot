@@ -3,85 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Access</title>
-    <!-- Telegram Mini App SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
-    <!-- আপনার দেওয়া Ad SDK (এটি অটোমেটিক অ্যাড লোড করবে) -->
-    <script src='//libtl.com/sdk.js' data-zone='10404814' data-sdk='show_10404814'></script>
-
+    <title>প্রেমের বিজ্ঞাপন</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            background: #000;
-            color: #fff;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-        .container {
-            text-align: center;
-            background: #111;
-            padding: 40px 20px;
-            border-radius: 30px;
-            border: 1px solid #333;
-            width: 85%;
-            max-width: 400px;
-            box-shadow: 0 0 30px rgba(0, 136, 204, 0.2);
-        }
-        .icon { font-size: 60px; margin-bottom: 20px; }
-        h1 { font-size: 24px; margin-bottom: 10px; color: #0088cc; }
-        p { font-size: 14px; color: #888; margin-bottom: 30px; }
+        :root { --primary: #e63946; --pink-text: #ff4d6d; --bg-light: #fff0f3; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f8f9fa; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 450px; background: #fff; min-height: 100vh; position: relative; box-shadow: 0 0 15px rgba(0,0,0,0.1); overflow-x: hidden; padding-bottom: 30px; }
         
-        /* প্রফেশনাল বাটন */
-        .ad-btn {
-            display: block;
-            width: 100%;
-            background: linear-gradient(90deg, #0088cc, #00c6ff);
-            color: white;
-            padding: 18px;
-            border-radius: 15px;
-            font-size: 18px;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 136, 204, 0.4);
-            transition: 0.3s;
-        }
-        .ad-btn:active { transform: scale(0.95); }
+        /* Header & Menu */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #fff; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; }
+        .side-menu { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: #fff; z-index: 1001; transition: 0.4s; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
+        .side-menu.open { left: 0; }
+        .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; }
+        .menu-header { padding: 30px 20px; background: var(--pink-text); color: white; font-size: 20px; font-weight: bold; }
+        .menu-item { display: flex; align-items: center; gap: 15px; padding: 15px 20px; color: #444; text-decoration: none; font-size: 16px; border-bottom: 1px solid #f1f1f1; cursor: pointer; }
+
+        /* Profile Cards */
+        .marquee-container { background: var(--pink-text); color: white; padding: 10px; margin: 10px; border-radius: 6px; overflow: hidden; white-space: nowrap; font-size: 14px; }
+        .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px 15px; }
+        .profile-card { background: #fff; border-radius: 12px; border: 1px solid #ffeef2; overflow: hidden; text-align: center; padding-bottom: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .profile-card img { width: 100%; height: 160px; object-fit: cover; }
+        .view-btn { background: var(--pink-text); color: white; border: none; padding: 8px 15px; border-radius: 50px; font-size: 11px; font-weight: bold; cursor: pointer; margin-top: 5px; }
+
+        /* Detail Page */
+        .detail-page { display: none; background: #fff; position: absolute; top: 0; width: 100%; min-height: 100vh; z-index: 200; }
+        .data-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #ddd; font-size: 14px; }
+        .data-label { color: purple; font-weight: bold; }
+        .calling-btn { background: linear-gradient(to right, #2ecc71, #27ae60); color: white; border: none; padding: 16px; width: 100%; border-radius: 50px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; font-weight: bold; margin-top: 20px; cursor: pointer; }
+
+        /* Modals */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: white; width: 100%; max-width: 400px; border-radius: 20px; padding: 20px; }
+        .modal-content input { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ddd; border-radius: 8px; }
+
+        .friend-list-btn { background: #8e44ad; color: white; border: none; padding: 10px; border-radius: 5px; margin: 10px; cursor: pointer; width: calc(100% - 20px); font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="icon">🔓</div>
-    <h1>লিংকটি প্রস্তুত!</h1>
-    <p>নিচের বাটনে ক্লিক করে বিজ্ঞাপনটি দেখুন এবং কন্টেন্টটি আনলক করুন।</p>
-    
-    <!-- এই বাটনে ক্লিক করলেই SDK সক্রিয় হবে -->
-    <button class="ad-btn" onclick="triggerAd()">UNLOCK NOW</button>
+<div class="app-container">
+    <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-header" id="menu-user-name">মেনু</div>
+        <div class="menu-item" onclick="location.reload()"><i class="fa fa-home"></i> হোম পেজ</div>
+        <div class="menu-item" onclick="handleFriendList()"><i class="fa fa-users"></i> ফ্রেন্ড লিস্ট</div>
+        <div class="menu-item" onclick="logout()"><i class="fa fa-sign-out-alt"></i> লগআউট</div>
+    </div>
+
+    <div id="main-content">
+        <div class="header">
+            <i class="fa fa-bars" onclick="toggleMenu()" style="cursor:pointer; font-size: 20px;"></i>
+            <h2 style="font-size:18px;">প্রেমের বিজ্ঞাপন</h2>
+            <img id="user-head-pic" style="width:35px; border-radius:50%; display:none;">
+        </div>
+        
+        <div class="marquee-container"><div class="marquee-text" id="marquee-text">লোড হচ্ছে...</div></div>
+        
+        <button class="friend-list-btn" onclick="handleFriendList()"><i class="fa fa-heart"></i> ফ্রেন্ড লিস্ট (ভেরিফাইড ইউজার)</button>
+
+        <div class="profile-grid" id="profile-container"></div>
+    </div>
+
+    <!-- Detail Page -->
+    <div id="detail-page" class="detail-page">
+        <div style="padding:15px; cursor:pointer; color:red;" onclick="closeDetails()"><i class="fa fa-arrow-left"></i> ফিরে যান</div>
+        <img id="d-img" style="width:100%; height:320px; object-fit:cover;">
+        <div style="padding:20px;">
+            <h2 id="d-name"></h2>
+            <p id="verified-tag" style="color: blue; font-size: 12px; display: none;"><i class="fa fa-check-circle"></i> ভেরিফাইড প্রোফাইল</p>
+            
+            <div id="private-info" style="display:none;">
+                <div class="data-row"><span class="data-label">বয়স</span> <span id="d-age"></span></div>
+                <div class="data-row"><span class="data-label">জেলা</span> <span id="d-dist"></span></div>
+                <div class="data-row"><span class="data-label">ফোন</span> <span id="d-phone"></span></div>
+            </div>
+
+            <div id="login-msg" style="background:#fff0f3; padding:15px; border-radius:10px; margin-top:10px; text-align:center;">
+                <p style="font-size:13px; color:#e63946;">পুরো তথ্য এবং কল করার বাটন দেখতে লগইন করুন</p>
+            </div>
+
+            <button class="calling-btn" onclick="handleCallAction()"><i class="fa fa-phone"></i> সরাসরি কল/মেসেজ করুন</button>
+        </div>
+    </div>
+
+    <!-- Verification Modal -->
+    <div class="modal-overlay" id="verifyModal">
+        <div class="modal-content">
+            <h3 style="text-align:center; color:var(--pink-text)">প্রোফাইল ভেরিফাই করুন</h3>
+            <p style="font-size:12px; text-align:center;">কল করতে হলে আপনার তথ্যগুলো দিতে হবে</p>
+            <input type="text" id="v-name" placeholder="আপনার নাম">
+            <input type="number" id="v-age" placeholder="আপনার বয়স">
+            <input type="tel" id="v-phone" placeholder="আপনার ফোন নম্বর">
+            <button class="view-btn" style="width:100%; padding:12px; margin-top:15px;" onclick="saveVerification()">ভেরিফাই সম্পন্ন করুন</button>
+        </div>
+    </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
 <script>
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
+    const firebaseConfig = {
+      apiKey: "AIzaSyAC8EXuscOlO8u6rIwUa5Nn68qXOlHUG2c",
+      authDomain: "love-ads-6e6f6.firebaseapp.com",
+      databaseURL: "https://love-ads-6e6f6-default-rtdb.firebaseio.com",
+      projectId: "love-ads-6e6f6",
+      storageBucket: "love-ads-6e6f6.firebasestorage.app",
+      messagingSenderId: "435675133984",
+      appId: "1:435675133984:web:e63e0bf09c436002106445"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const auth = firebase.auth();
 
-    function triggerAd() {
-        // ১. আপনার SDK এর ফাংশনটি কল করা (যদি SDK এটি সাপোর্ট করে)
-        if (typeof show_10404814 === 'function') {
-            show_10404814();
-        } 
+    let approvedProfiles = [];
+    let currentUserData = null;
+
+    // ১. প্রোফাইল লোড (সবাই দেখতে পাবে)
+    db.ref('approved_profiles').on('value', snap => {
+        approvedProfiles = [];
+        let html = '';
+        snap.forEach(c => {
+            const p = c.val(); p.id = c.key;
+            approvedProfiles.push(p);
+            // হোম পেজে শুধু নাম আর ছবি দেখা যাবে
+            html += `<div class="profile-card"><img src="${p.img}"><h3>${p.name}</h3><button class="view-btn" onclick="openDetails('${p.id}')">বিস্তারিত</button></div>`;
+        });
+        document.getElementById('profile-container').innerHTML = html;
+    });
+
+    // ২. বিস্তারিত দেখা
+    function openDetails(id) {
+        const p = approvedProfiles.find(x => x.id === id);
+        document.getElementById('d-img').src = p.img;
+        document.getElementById('d-name').innerText = p.name;
         
-        // ২. বিকল্প হিসেবে আপনার Adsterra স্মার্টলিংক ওপেন করা (যাতে ইনকাম নিশ্চিত হয়)
-        setTimeout(() => {
-            tg.openLink("https://www.effectivegatecpm.com/nt8dt64s?key=0d7f3498e36834982c58c761f7deaa95");
-        }, 500); // ০.৫ সেকেন্ড পর লিংকটি ওপেন হবে
-    }
-</script>
+        // তথ্য হাইড করে রাখা
+        if(auth.currentUser && currentUserData) {
+            showPrivateInfo(p);
+        } else {
+            hidePrivateInfo();
+        }
 
+        document.getElementById('main-content').style.display = 'none';
+        document.getElementById('detail-page').style.display = 'block';
+    }
+
+    // ৩. কলিং বাটন অ্যাকশন (লগইন গেটওয়ে)
+    function handleCallAction() {
+        if(!auth.currentUser) {
+            googleLogin();
+        } else if(!currentUserData) {
+            document.getElementById('verifyModal').style.display = 'flex';
+        } else {
+            // যদি লগইন এবং ভেরিফাইড থাকে তবে ফোন নাম্বার ওপেন হবে
+            const pName = document.getElementById('d-name').innerText;
+            const profile = approvedProfiles.find(x => x.name === pName);
+            window.location.href = "tel:" + profile.call;
+        }
+    }
+
+    // ৪. গুগল লগইন
+    function googleLogin() {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider).then(res => {
+            checkUser(res.user);
+        }).catch(e => alert("লগইন ব্যর্থ!"));
+    }
+
+    // ৫. ইউজার চেক ও ভেরিফিকেশন
+    function checkUser(user) {
+        db.ref('users/' + user.uid).on('value', snap => {
+            currentUserData = snap.val();
+            if(currentUserData) {
+                document.getElementById('user-head-pic').src = user.photoURL;
+                document.getElementById('user-head-pic').style.display = 'block';
+                document.getElementById('menu-user-name').innerText = currentUserData.name;
+                location.reload(); // রিফ্রেশ করে তথ্য দেখাবে
+            } else {
+                document.getElementById('verifyModal').style.display = 'flex';
+            }
+        });
+    }
+
+    function saveVerification() {
+        const name = document.getElementById('v-name').value;
+        const age = document.getElementById('v-age').value;
+        const phone = document.getElementById('v-phone').value;
+        if(!name || !age || !phone) return alert("সব তথ্য দিন!");
+
+        db.ref('users/' + auth.currentUser.uid).set({
+            name, age, phone, img: auth.currentUser.photoURL, uid: auth.currentUser.uid
+        }).then(() => {
+            alert("ভেরিফিকেশন সফল!");
+            location.reload();
+        });
+    }
+
+    // ৬. ফ্রেন্ড লিস্ট হ্যান্ডেলার
+    function handleFriendList() {
+        if(!auth.currentUser) {
+            alert("ফ্রেন্ড লিস্ট দেখতে আগে লগইন করুন!");
+            googleLogin();
+        } else if(!currentUserData) {
+            alert("আগে ভেরিফাই সম্পন্ন করুন!");
+            document.getElementById('verifyModal').style.display = 'flex';
+        } else {
+            alert("আপনার ফ্রেন্ড লিস্ট লোড হচ্ছে...");
+            // এখানে চাইলে ফ্রেন্ডলিস্ট পেজ দেখাতে পারেন
+        }
+    }
+
+    // হেল্পার ফাংশন
+    function showPrivateInfo(p) {
+        document.getElementById('d-age').innerText = p.age + " বছর";
+        document.getElementById('d-dist').innerText = p.dist;
+        document.getElementById('d-phone').innerText = p.call;
+        document.getElementById('private-info').style.display = 'block';
+        document.getElementById('login-msg').style.display = 'none';
+        document.getElementById('verified-tag').style.display = 'block';
+    }
+
+    function hidePrivateInfo() {
+        document.getElementById('private-info').style.display = 'none';
+        document.getElementById('login-msg').style.display = 'block';
+        document.getElementById('verified-tag').style.display = 'none';
+    }
+
+    auth.onAuthStateChanged(user => {
+        if(user) checkUser(user);
+    });
+
+    function logout() { auth.signOut().then(() => location.reload()); }
+    function toggleMenu() { document.getElementById('sideMenu').classList.toggle('open'); document.getElementById('menuOverlay').style.display = document.getElementById('sideMenu').classList.contains('open') ? 'block' : 'none'; }
+    function closeDetails() { document.getElementById('main-content').style.display = 'block'; document.getElementById('detail-page').style.display = 'none'; }
+</script>
 </body>
 </html>
