@@ -1,1 +1,898 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Image Upload | Rater Tara</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Hind Siliguri", sans-serif;
+            background: #f4f5f9;
+            color: #222;
+            min-height: 100vh;
+            padding: 20px 12px;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 520px;
+            margin: auto;
+            background: #fff;
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 10px 35px rgba(0,0,0,.10);
+        }
+
+        .header {
+            padding: 25px 20px;
+            text-align: center;
+            color: #fff;
+            background: linear-gradient(
+                135deg,
+                #ff4f81,
+                #8e44ad
+            );
+        }
+
+        .header i {
+            font-size: 38px;
+            margin-bottom: 8px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header p {
+            margin-top: 3px;
+            opacity: .9;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .upload-box {
+            border: 2px dashed #d9d9d9;
+            border-radius: 18px;
+            padding: 25px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .upload-box:hover {
+            border-color: #ff4f81;
+            background: #fff8fa;
+        }
+
+        .upload-box i {
+            font-size: 42px;
+            color: #ff4f81;
+            margin-bottom: 10px;
+        }
+
+        .upload-box h3 {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .upload-box p {
+            color: #777;
+            font-size: 13px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .preview {
+            display: none;
+            margin-top: 18px;
+            position: relative;
+        }
+
+        .preview img {
+            width: 100%;
+            max-height: 320px;
+            object-fit: contain;
+            border-radius: 15px;
+            background: #f3f3f3;
+        }
+
+        .remove-btn {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            width: 38px;
+            height: 38px;
+            border: 0;
+            border-radius: 50%;
+            background: #e53935;
+            color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .upload-btn {
+            width: 100%;
+            border: 0;
+            border-radius: 14px;
+            padding: 14px;
+            margin-top: 18px;
+            background: linear-gradient(
+                135deg,
+                #ff4f81,
+                #8e44ad
+            );
+            color: #fff;
+            font-family: inherit;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .upload-btn:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+        }
+
+        .progress-area {
+            display: none;
+            margin-top: 18px;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .progress {
+            width: 100%;
+            height: 10px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #eee;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                #ff4f81,
+                #8e44ad
+            );
+            transition: width .2s;
+        }
+
+        .success-box,
+        .error-box {
+            display: none;
+            margin-top: 18px;
+            padding: 15px;
+            border-radius: 14px;
+            font-size: 14px;
+        }
+
+        .success-box {
+            background: #e9fff1;
+            color: #176b39;
+            border: 1px solid #b9efcb;
+        }
+
+        .error-box {
+            background: #fff0f0;
+            color: #b42318;
+            border: 1px solid #ffc7c7;
+        }
+
+        .url-box {
+            display: flex;
+            gap: 7px;
+            margin-top: 12px;
+        }
+
+        .url-box input {
+            min-width: 0;
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 12px;
+        }
+
+        .copy-btn,
+        .open-btn {
+            border: 0;
+            border-radius: 10px;
+            padding: 9px 12px;
+            color: #fff;
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .copy-btn {
+            background: #673ab7;
+        }
+
+        .open-btn {
+            background: #00897b;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .reset-btn {
+            width: 100%;
+            margin-top: 10px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            background: #fff;
+            color: #555;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+            color: #888;
+            border-top: 1px solid #eee;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="header">
+        <i class="fa-solid fa-cloud-arrow-up"></i>
+
+        <h1>Image Upload</h1>
+
+        <p>Rater Tara Cloudinary Upload</p>
+    </div>
+
+
+    <div class="content">
+
+        <label
+            class="upload-box"
+            for="fileInput"
+        >
+
+            <i class="fa-regular fa-image"></i>
+
+            <h3>ছবি নির্বাচন করুন</h3>
+
+            <p>
+                JPG / PNG / WEBP
+                <br>
+                Maximum 5 MB
+            </p>
+
+        </label>
+
+
+        <input
+            type="file"
+            id="fileInput"
+            accept="image/jpeg,image/png,image/webp"
+        >
+
+
+        <div
+            class="preview"
+            id="preview"
+        >
+
+            <img
+                id="previewImage"
+                alt="Preview"
+            >
+
+            <button
+                type="button"
+                class="remove-btn"
+                id="removeBtn"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="upload-btn"
+            id="uploadBtn"
+            disabled
+        >
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            ছবি আপলোড করুন
+        </button>
+
+
+        <div
+            class="progress-area"
+            id="progressArea"
+        >
+
+            <div class="progress-text">
+
+                <span>
+                    Uploading...
+                </span>
+
+                <span id="progressText">
+                    0%
+                </span>
+
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-bar"
+                    id="progressBar"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="success-box"
+            id="successBox"
+        >
+
+            <strong>
+                <i class="fa-solid fa-circle-check"></i>
+                ছবি সফলভাবে আপলোড হয়েছে
+            </strong>
+
+            <div class="url-box">
+
+                <input
+                    type="text"
+                    id="imageUrl"
+                    readonly
+                >
+
+                <button
+                    type="button"
+                    class="copy-btn"
+                    id="copyBtn"
+                >
+                    <i class="fa-regular fa-copy"></i>
+                    Copy
+                </button>
+
+            </div>
+
+            <button
+                type="button"
+                class="open-btn"
+                id="openBtn"
+            >
+                <i class="fa-solid fa-up-right-from-square"></i>
+                ছবি দেখুন
+            </button>
+
+        </div>
+
+
+        <div
+            class="error-box"
+            id="errorBox"
+        ></div>
+
+
+        <button
+            type="button"
+            class="reset-btn"
+            id="resetBtn"
+        >
+            <i class="fa-solid fa-rotate-right"></i>
+            নতুন ছবি নির্বাচন করুন
+        </button>
+
+    </div>
+
+
+    <div class="footer">
+        © 2026 Rater Tara • All Rights Reserved
+    </div>
+
+</div>
+
+
+<script>
+
+    const fileInput = document.getElementById("fileInput");
+    const preview = document.getElementById("preview");
+    const previewImage = document.getElementById("previewImage");
+
+    const uploadBtn = document.getElementById("uploadBtn");
+    const removeBtn = document.getElementById("removeBtn");
+
+    const progressArea = document.getElementById("progressArea");
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+
+    const successBox = document.getElementById("successBox");
+    const errorBox = document.getElementById("errorBox");
+
+    const imageUrl = document.getElementById("imageUrl");
+
+    const copyBtn = document.getElementById("copyBtn");
+    const openBtn = document.getElementById("openBtn");
+
+    const resetBtn = document.getElementById("resetBtn");
+
+
+    let selectedFile = null;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Select Image
+    |--------------------------------------------------------------------------
+    */
+
+    fileInput.addEventListener("change", function () {
+
+        hideMessages();
+
+        const file = this.files[0];
+
+        if (!file) {
+            return;
+        }
+
+
+        const allowedTypes = [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+        ];
+
+
+        if (!allowedTypes.includes(file.type)) {
+
+            showError(
+                "শুধু JPG, PNG অথবা WEBP ছবি নির্বাচন করুন।"
+            );
+
+            resetUploader();
+
+            return;
+        }
+
+
+        if (file.size > 5 * 1024 * 1024) {
+
+            showError(
+                "ছবির সাইজ সর্বোচ্চ 5 MB হতে পারবে।"
+            );
+
+            resetUploader();
+
+            return;
+        }
+
+
+        selectedFile = file;
+
+
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+
+            previewImage.src = event.target.result;
+
+            preview.style.display = "block";
+
+            uploadBtn.disabled = false;
+
+        };
+
+        reader.readAsDataURL(file);
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Upload
+    |--------------------------------------------------------------------------
+    */
+
+    uploadBtn.addEventListener("click", function () {
+
+        if (!selectedFile) {
+
+            showError(
+                "প্রথমে একটি ছবি নির্বাচন করুন।"
+            );
+
+            return;
+        }
+
+
+        hideMessages();
+
+        uploadBtn.disabled = true;
+
+        progressArea.style.display = "block";
+
+        progressBar.style.width = "0%";
+
+        progressText.textContent = "0%";
+
+
+        const formData = new FormData();
+
+        formData.append(
+            "file",
+            selectedFile
+        );
+
+
+        const xhr = new XMLHttpRequest();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Upload Progress
+        |--------------------------------------------------------------------------
+        */
+
+        xhr.upload.addEventListener(
+            "progress",
+            function (event) {
+
+                if (event.lengthComputable) {
+
+                    const percent =
+                        Math.round(
+                            (event.loaded / event.total) * 100
+                        );
+
+                    progressBar.style.width =
+                        percent + "%";
+
+                    progressText.textContent =
+                        percent + "%";
+                }
+
+            }
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Upload Complete
+        |--------------------------------------------------------------------------
+        */
+
+        xhr.addEventListener(
+            "load",
+            function () {
+
+                progressBar.style.width = "100%";
+
+                progressText.textContent = "100%";
+
+
+                let response;
+
+                try {
+
+                    response =
+                        JSON.parse(xhr.responseText);
+
+                } catch (error) {
+
+                    showError(
+                        "Server থেকে সঠিক response পাওয়া যায়নি।"
+                    );
+
+                    uploadBtn.disabled = false;
+
+                    return;
+                }
+
+
+                if (
+                    xhr.status >= 200 &&
+                    xhr.status < 300 &&
+                    response.success &&
+                    response.secure_url
+                ) {
+
+                    imageUrl.value =
+                        response.secure_url;
+
+                    successBox.style.display =
+                        "block";
+
+                    uploadBtn.disabled = true;
+
+                } else {
+
+                    let message =
+                        response.message ||
+                        "Image upload failed.";
+
+                    if (
+                        response.cloudinary_response &&
+                        response.cloudinary_response.error &&
+                        response.cloudinary_response.error.message
+                    ) {
+
+                        message +=
+                            " " +
+                            response.cloudinary_response.error.message;
+                    }
+
+
+                    showError(message);
+
+                    uploadBtn.disabled = false;
+                }
+
+            }
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Network Error
+        |--------------------------------------------------------------------------
+        */
+
+        xhr.addEventListener(
+            "error",
+            function () {
+
+                showError(
+                    "Server-এর সাথে সংযোগ করা যায়নি।"
+                );
+
+                uploadBtn.disabled = false;
+
+            }
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Timeout
+        |--------------------------------------------------------------------------
+        */
+
+        xhr.addEventListener(
+            "timeout",
+            function () {
+
+                showError(
+                    "Upload timeout হয়েছে। আবার চেষ্টা করুন।"
+                );
+
+                uploadBtn.disabled = false;
+
+            }
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Send to PHP
+        |--------------------------------------------------------------------------
+        */
+
+        xhr.open(
+            "POST",
+            "upload.php",
+            true
+        );
+
+        xhr.timeout = 120000;
+
+        xhr.send(formData);
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Remove Image
+    |--------------------------------------------------------------------------
+    */
+
+    removeBtn.addEventListener(
+        "click",
+        function () {
+
+            resetUploader();
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Reset
+    |--------------------------------------------------------------------------
+    */
+
+    resetBtn.addEventListener(
+        "click",
+        function () {
+
+            resetUploader();
+
+        }
+    );
+
+
+    function resetUploader() {
+
+        selectedFile = null;
+
+        fileInput.value = "";
+
+        previewImage.src = "";
+
+        preview.style.display = "none";
+
+        uploadBtn.disabled = true;
+
+        progressArea.style.display = "none";
+
+        progressBar.style.width = "0%";
+
+        progressText.textContent = "0%";
+
+        successBox.style.display = "none";
+
+        errorBox.style.display = "none";
+
+        imageUrl.value = "";
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Copy URL
+    |--------------------------------------------------------------------------
+    */
+
+    copyBtn.addEventListener(
+        "click",
+        async function () {
+
+            if (!imageUrl.value) {
+                return;
+            }
+
+
+            try {
+
+                await navigator.clipboard.writeText(
+                    imageUrl.value
+                );
+
+                copyBtn.innerHTML =
+                    '<i class="fa-solid fa-check"></i> Copied';
+
+                setTimeout(
+                    function () {
+
+                        copyBtn.innerHTML =
+                            '<i class="fa-regular fa-copy"></i> Copy';
+
+                    },
+                    1500
+                );
+
+            } catch (error) {
+
+                imageUrl.select();
+
+                document.execCommand("copy");
+
+            }
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Open Image
+    |--------------------------------------------------------------------------
+    */
+
+    openBtn.addEventListener(
+        "click",
+        function () {
+
+            if (imageUrl.value) {
+
+                window.open(
+                    imageUrl.value,
+                    "_blank"
+                );
+
+            }
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Error
+    |--------------------------------------------------------------------------
+    */
+
+    function showError(message) {
+
+        errorBox.innerHTML =
+            '<i class="fa-solid fa-circle-exclamation"></i> ' +
+            message;
+
+        errorBox.style.display = "block";
+
+    }
+
+
+    function hideMessages() {
+
+        errorBox.style.display = "none";
+
+        successBox.style.display = "none";
+
+    }
+
+</script>
+
+</body>
 </html>
